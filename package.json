@@ -1,0 +1,12 @@
+{
+  "name": "onboardiq-monorepo",
+  "version": "1.0.0",
+  "description": "OnboardIQ - Client Onboarding Document Checker (React + Node.js + Express)",
+  "scripts": {
+    "server": "cd server && npm start",
+    "client": "cd client && npm run dev",
+    "start": "node -e \"console.log('Use npm run dev:all or start client & server in separate terminals')\"",
+    "build:client": "cd client && npm run build"
+  },
+  "keywords": ["react", "express", "onboarding", "document-checker"]
+}

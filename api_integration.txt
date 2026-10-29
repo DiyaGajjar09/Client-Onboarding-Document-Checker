@@ -1,0 +1,26 @@
+Hello Engineering Team,
+
+Below is the setup info for integrating our payment and invoicing workflow:
+
+API SPEC & HOST:
+- Base URL: https://api.paybridge-sandbox.io/v2
+- Documentation: Swagger docs are available at https://docs.paybridge.io/spec.json
+- Authentication: Uses Bearer token auth in the Authorization header.
+
+CREDENTIALS (CONFIDENTIAL):
+- Sandbox API key: [redacted; configure securely outside the repository]
+- Production API key: [redacted; configure securely outside the repository]
+- Database root credentials: [redacted]
+
+WEBHOOK & EVENTS:
+- Webhook callback URL: https://our-app.com/api/v1/webhooks/paybridge
+- Event triggers: charge.succeeded, invoice.payment_failed, customer.subscription.deleted
+
+RATE LIMITS & QUESTIONS:
+- Requests per minute limit: 500 req/min with burst up to 800.
+- Error handling: We need standard exponential backoff retries on 5xx errors, but for 4xx errors we'll figure out a fallback soon.
+- Timeline: Target go-live date is ASAP, hopefully next week?
+
+Best regards,
+Devon Vance
+Head of Product

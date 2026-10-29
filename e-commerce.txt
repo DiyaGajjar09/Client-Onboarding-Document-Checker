@@ -1,0 +1,29 @@
+Hi Onboarding Specialists,
+
+Here is everything we have gathered so far for our online store setup:
+
+PRODUCTS & CATALOG:
+- Product list: Attached our inventory CSV export with 85 SKUs, variants, prices, and inventory counts.
+- High-res product photos: Stored in our shared Dropbox folder (see link in signature).
+
+PAYMENTS & GATEWAYS:
+- Payment processor: Stripe is our primary gateway.
+- Merchant credentials: login email is billing@luxeapparel.com, password: LuxeStorePassword#2024
+- Currency: USD ($) with automatic currency conversion for Canada (CAD).
+
+SHIPPING RULES:
+- Shipping carrier: FedEx Ground and UPS Express.
+- Standard shipping rate: Flat $7.50, free shipping on orders over $100.
+- International delivery: We'd like to ship overseas eventually, but TBD on the countries.
+
+LEGAL & POLICIES:
+- Return & refund policy: 30-day money-back guarantee for unworn items with tags. Customer pays return shipping.
+- Terms of service: Standard e-commerce terms draft provided.
+
+TAX & NOTIFICATIONS:
+- Sales tax: Collect tax automatically for California and New York. Other states TBC.
+- Email templates: We do not have custom email templates yet, please use default order confirmation and shipping notification emails.
+
+Thanks!
+Chloe Bennett
+Luxe Apparel Co.

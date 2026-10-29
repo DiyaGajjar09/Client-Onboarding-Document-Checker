@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OnboardIQ — Client Onboarding Document Checker</title>
+  <meta name="description" content="Check client onboarding submissions against a configurable checklist. Detect missing assets, insecure credentials, unclear requirements, and auto-generate client follow-up questions." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== BACKGROUND ORBS ===== -->
+  <div class="bg-orb orb-1" aria-hidden="true"></div>
+  <div class="bg-orb orb-2" aria-hidden="true"></div>
+  <div class="bg-orb orb-3" aria-hidden="true"></div>
+
+  <!-- ===== HEADER ===== -->
+  <header class="app-header" role="banner">
+    <div class="header-inner">
+      <div class="logo-group">
+        <div class="logo-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="28" height="28" rx="8" fill="url(#logo-grad)"/>
+            <path d="M7 9h14M7 14h10M7 19h7" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="21" cy="19" r="3" fill="#34d399"/>
+            <defs>
+              <linearGradient id="logo-grad" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#6366f1"/>
+                <stop offset="1" stop-color="#8b5cf6"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <span class="logo-text">OnboardIQ</span>
+        <span class="logo-badge">Beta</span>
+      </div>
+      <nav class="header-actions" aria-label="Header actions">
+        <button id="btn-save-checklist" class="btn btn-ghost btn-sm" title="Save checklist to browser">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>
+          Save Checklist
+        </button>
+        <button id="btn-load-checklist" class="btn btn-ghost btn-sm" title="Load saved checklist">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Load
+        </button>
+        <button id="btn-reset-all" class="btn btn-ghost btn-sm btn-danger" title="Reset everything">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,4 1,10 7,10"/><path d="M3.51 15a9 9 0 1 0 .49-3.3"/></svg>
+          Reset
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== STEP PROGRESS BAR ===== -->
+  <div class="steps-bar" role="navigation" aria-label="Step navigation">
+    <div class="steps-inner">
+      <button class="step-pill active" id="step-nav-1" data-step="1" aria-current="step">
+        <span class="step-num">1</span>
+        <span class="step-label">Configure Checklist</span>
+      </button>
+      <div class="step-connector" aria-hidden="true"></div>
+      <button class="step-pill" id="step-nav-2" data-step="2">
+        <span class="step-num">2</span>
+        <span class="step-label">Paste Submission</span>
+      </button>
+      <div class="step-connector" aria-hidden="true"></div>
+      <button class="step-pill" id="step-nav-3" data-step="3">
+        <span class="step-num">3</span>
+        <span class="step-label">Run Analysis</span>
+      </button>
+      <div class="step-connector" aria-hidden="true"></div>
+      <button class="step-pill" id="step-nav-4" data-step="4">
+        <span class="step-num">4</span>
+        <span class="step-label">Results & Follow-up</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="app-main" role="main">
+
+    <!-- ======================== STEP 1: CONFIGURE CHECKLIST ======================== -->
+    <section id="step-1" class="step-panel active" aria-labelledby="step1-heading">
+      <div class="panel-header">
+        <div class="panel-header-text">
+          <h1 id="step1-heading" class="panel-title">Configure Your Checklist</h1>
+          <p class="panel-subtitle">Define the items you expect from the client. Use templates to get started quickly.</p>
+        </div>
+        <div class="panel-header-actions">
+          <div class="template-dropdown-wrapper">
+            <button class="btn btn-secondary btn-sm" id="btn-template-toggle" aria-haspopup="true" aria-expanded="false">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+              Use Template
+              <svg class="dropdown-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg>
+            </button>
+            <div class="template-dropdown" id="template-dropdown" role="menu" aria-label="Templates" hidden>
+              <button class="template-option" data-template="web" role="menuitem">
+                <span class="template-icon">🌐</span>
+                <div><strong>Web Project</strong><small>Logo, brand guide, content, domain, hosting creds</small></div>
+              </button>
+              <button class="template-option" data-template="brand" role="menuitem">
+                <span class="template-icon">🎨</span>
+                <div><strong>Brand Campaign</strong><small>Brand assets, messaging, target audience, budget</small></div>
+              </button>
+              <button class="template-option" data-template="api" role="menuitem">
+                <span class="template-icon">⚙️</span>
+                <div><strong>API Integration</strong><small>API keys, endpoints, auth tokens, docs, test creds</small></div>
+              </button>
+              <button class="template-option" data-template="ecommerce" role="menuitem">
+                <span class="template-icon">🛒</span>
+                <div><strong>E-Commerce Setup</strong><small>Product catalog, payment gateway, shipping, policies</small></div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add Item Form -->
+      <div class="add-item-card glass-card">
+        <h2 class="card-section-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          Add Checklist Item
+        </h2>
+        <div class="add-item-form" id="add-item-form">
+          <div class="form-row">
+            <div class="form-group flex-2">
+              <label for="item-name" class="form-label">Item Name <span class="required">*</span></label>
+              <input type="text" id="item-name" class="form-input" placeholder="e.g. Brand Logo (SVG)" autocomplete="off" />
+            </div>
+            <div class="form-group flex-1">
+              <label for="item-category" class="form-label">Category</label>
+              <select id="item-category" class="form-input form-select">
+                <option value="asset">📁 Asset</option>
+                <option value="credential">🔑 Credential</option>
+                <option value="requirement">📋 Requirement</option>
+                <option value="access">🔐 Access</option>
+                <option value="content">✍️ Content</option>
+                <option value="legal">⚖️ Legal</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group flex-2">
+              <label for="item-keywords" class="form-label">Detection Keywords <span class="hint">(comma separated)</span></label>
+              <input type="text" id="item-keywords" class="form-input" placeholder="e.g. logo, brand mark, SVG, icon" autocomplete="off" />
+            </div>
+            <div class="form-group flex-1">
+              <label class="form-label">Options</label>
+              <div class="toggle-group">
+                <label class="toggle-label" for="item-required">
+                  <input type="checkbox" id="item-required" class="toggle-checkbox" checked />
+                  <span class="toggle-track"></span>
+                  <span>Required</span>
+                </label>
+                <label class="toggle-label" for="item-sensitive">
+                  <input type="checkbox" id="item-sensitive" class="toggle-checkbox" />
+                  <span class="toggle-track toggle-track-danger"></span>
+                  <span>Sensitive</span>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group flex-2">
+              <label for="item-followup" class="form-label">Auto Follow-up Question <span class="hint">(used if missing)</span></label>
+              <input type="text" id="item-followup" class="form-input" placeholder="e.g. Could you please share the logo in SVG or PNG format?" />
+            </div>
+            <div class="form-group flex-1 form-actions-col">
+              <button class="btn btn-primary full-width" id="btn-add-item">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add Item
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Checklist Table -->
+      <div class="checklist-card glass-card">
+        <div class="card-header-row">
+          <h2 class="card-section-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9,11 12,14 22,4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            Checklist Items
+          </h2>
+          <span class="item-count-badge" id="item-count-badge">0 items</span>
+        </div>
+
+        <div class="checklist-filters" id="checklist-filters">
+          <button class="filter-chip active" data-filter="all">All</button>
+          <button class="filter-chip" data-filter="asset">📁 Assets</button>
+          <button class="filter-chip" data-filter="credential">🔑 Credentials</button>
+          <button class="filter-chip" data-filter="requirement">📋 Requirements</button>
+          <button class="filter-chip" data-filter="access">🔐 Access</button>
+          <button class="filter-chip" data-filter="content">✍️ Content</button>
+          <button class="filter-chip" data-filter="legal">⚖️ Legal</button>
+        </div>
+
+        <div class="checklist-empty" id="checklist-empty">
+          <div class="empty-icon">📋</div>
+          <p>No checklist items yet. Add items above or use a template.</p>
+        </div>
+
+        <ul class="checklist-list" id="checklist-list" role="list" aria-label="Checklist items" hidden></ul>
+      </div>
+
+      <div class="step-footer">
+        <div></div>
+        <button class="btn btn-primary btn-lg" id="btn-step1-next">
+          Continue to Paste Submission
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ======================== STEP 2: PASTE SUBMISSION ======================== -->
+    <section id="step-2" class="step-panel" aria-labelledby="step2-heading" hidden>
+      <div class="panel-header">
+        <div class="panel-header-text">
+          <h1 id="step2-heading" class="panel-title">Paste Client Submission</h1>
+          <p class="panel-subtitle">Paste the client's email, notes, or document text below. You can also drag &amp; drop a .txt file.</p>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <div class="dropzone" id="dropzone" role="region" aria-label="File drop zone" tabindex="0">
+          <div class="dropzone-inner">
+            <div class="dropzone-icon" aria-hidden="true">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <p class="dropzone-text">Drop a <strong>.txt</strong> file here, or click to browse</p>
+            <input type="file" id="file-input" accept=".txt" hidden aria-label="Upload text file" />
+            <button class="btn btn-ghost btn-sm" id="btn-browse-file">Browse File</button>
+          </div>
+        </div>
+
+        <div class="textarea-wrapper">
+          <div class="textarea-toolbar">
+            <span class="textarea-label">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/></svg>
+              Client Submission Text
+            </span>
+            <div class="textarea-actions">
+              <button class="btn btn-ghost btn-sm" id="btn-clear-text">Clear</button>
+              <button class="btn btn-ghost btn-sm" id="btn-load-sample">Load Sample</button>
+            </div>
+          </div>
+          <textarea
+            id="submission-text"
+            class="submission-textarea"
+            placeholder="Paste the client's email body, notes, onboarding form response, or any submission text here..."
+            aria-label="Client submission text"
+            spellcheck="false"
+          ></textarea>
+          <div class="textarea-meta">
+            <span id="char-count" class="char-count">0 characters</span>
+            <span id="word-count" class="word-count">0 words</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-footer">
+        <button class="btn btn-ghost" id="btn-step2-back">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12,19 5,12 12,5"/></svg>
+          Back
+        </button>
+        <button class="btn btn-primary btn-lg" id="btn-step2-next">
+          Continue to Analysis
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12,5 19,12 12,19"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- ======================== STEP 3: RUN ANALYSIS ======================== -->
+    <section id="step-3" class="step-panel" aria-labelledby="step3-heading" hidden>
+      <div class="panel-header">
+        <div class="panel-header-text">
+          <h1 id="step3-heading" class="panel-title">Running Analysis</h1>
+          <p class="panel-subtitle">Scanning submission for missing items, credential risks, and unclear requirements…</p>
+        </div>
+      </div>
+
+      <div class="glass-card analysis-card">
+        <div class="analysis-animation" id="analysis-animation" aria-live="polite" aria-label="Analysis progress">
+          <div class="scan-rings" aria-hidden="true">
+            <div class="scan-ring ring-1"></div>
+            <div class="scan-ring ring-2"></div>
+            <div class="scan-ring ring-3"></div>
+            <div class="scan-doc" aria-hidden="true">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+            </div>
+          </div>
+          <div class="analysis-log" id="analysis-log" role="log" aria-live="polite">
+            <div class="log-line" id="log-line-1">Initializing engine…</div>
+            <div class="log-line" id="log-line-2"></div>
+            <div class="log-line" id="log-line-3"></div>
+            <div class="log-line" id="log-line-4"></div>
+          </div>
+        </div>
+
+        <div class="analysis-progress-track" aria-hidden="true">
+          <div class="analysis-progress-bar" id="analysis-progress-bar"></div>
+        </div>
+        <p class="analysis-status-text" id="analysis-status-text">Preparing…</p>
+      </div>
+
+      <div class="step-footer">
+        <button class="btn btn-ghost" id="btn-step3-back">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12,19 5,12 12,5"/></svg>
+          Back
+        </button>
+        <button class="btn btn-primary btn-lg" id="btn-run-analysis">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5,3 19,12 5,21 5,3"/></svg>
+          Start Scan
+        </button>
+      </div>
+    </section>
+
+    <!-- ======================== STEP 4: RESULTS ======================== -->
+    <section id="step-4" class="step-panel" aria-labelledby="step4-heading" hidden>
+      <div class="panel-header">
+        <div class="panel-header-text">
+          <h1 id="step4-heading" class="panel-title">Results &amp; Follow-up</h1>
+          <p class="panel-subtitle">Here's what we found. Review the findings and generate your client-ready follow-up.</p>
+        </div>
+        <div class="panel-header-actions">
+          <button class="btn btn-ghost btn-sm" id="btn-rerun">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,4 1,10 7,10"/><path d="M3.51 15a9 9 0 1 0 .49-3.3"/></svg>
+            Re-scan
+          </button>
+        </div>
+      </div>
+
+      <!-- Scorecard -->
+      <div class="scorecard-row" id="scorecard-row" aria-label="Submission scorecard">
+        <div class="score-card glass-card" id="score-overall">
+          <div class="score-ring-wrapper">
+            <svg class="score-ring" viewBox="0 0 80 80" aria-hidden="true">
+              <circle class="ring-bg" cx="40" cy="40" r="32" />
+              <circle class="ring-fill" id="ring-fill-overall" cx="40" cy="40" r="32" stroke-dasharray="201" stroke-dashoffset="201" />
+            </svg>
+            <span class="score-pct" id="score-pct-overall">0%</span>
+          </div>
+          <div class="score-label">Overall Completion</div>
+        </div>
+        <div class="score-mini-cards" id="score-mini-cards"></div>
+      </div>
+
+      <!-- Findings Panels -->
+      <div class="findings-grid" id="findings-grid">
+
+        <!-- Missing Items -->
+        <div class="finding-panel panel-missing glass-card" id="panel-missing" aria-labelledby="panel-missing-title">
+          <div class="finding-panel-header">
+            <div class="finding-icon">🔴</div>
+            <h2 class="finding-title" id="panel-missing-title">Missing Items</h2>
+            <span class="finding-badge" id="badge-missing">0</span>
+          </div>
+          <ul class="finding-list" id="list-missing" role="list" aria-label="Missing items"></ul>
+          <div class="finding-empty" id="empty-missing" hidden>
+            <span>✅ All required items found!</span>
+          </div>
+        </div>
+
+        <!-- Security Warnings -->
+        <div class="finding-panel panel-security glass-card" id="panel-security" aria-labelledby="panel-security-title">
+          <div class="finding-panel-header">
+            <div class="finding-icon">🟠</div>
+            <h2 class="finding-title" id="panel-security-title">Security Warnings</h2>
+            <span class="finding-badge badge-orange" id="badge-security">0</span>
+          </div>
+          <ul class="finding-list" id="list-security" role="list" aria-label="Security warnings"></ul>
+          <div class="finding-empty" id="empty-security" hidden>
+            <span>✅ No credential risks detected!</span>
+          </div>
+        </div>
+
+        <!-- Unclear Requirements -->
+        <div class="finding-panel panel-unclear glass-card" id="panel-unclear" aria-labelledby="panel-unclear-title">
+          <div class="finding-panel-header">
+            <div class="finding-icon">🟡</div>
+            <h2 class="finding-title" id="panel-unclear-title">Unclear Requirements</h2>
+            <span class="finding-badge badge-yellow" id="badge-unclear">0</span>
+          </div>
+          <ul class="finding-list" id="list-unclear" role="list" aria-label="Unclear requirements"></ul>
+          <div class="finding-empty" id="empty-unclear" hidden>
+            <span>✅ All requirements are clear!</span>
+          </div>
+        </div>
+
+        <!-- Confirmed Items -->
+        <div class="finding-panel panel-confirmed glass-card" id="panel-confirmed" aria-labelledby="panel-confirmed-title">
+          <div class="finding-panel-header">
+            <div class="finding-icon">🟢</div>
+            <h2 class="finding-title" id="panel-confirmed-title">Confirmed Items</h2>
+            <span class="finding-badge badge-green" id="badge-confirmed">0</span>
+          </div>
+          <ul class="finding-list" id="list-confirmed" role="list" aria-label="Confirmed items"></ul>
+          <div class="finding-empty" id="empty-confirmed" hidden>
+            <span>No items confirmed yet.</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Follow-up Generator -->
+      <div class="followup-card glass-card" id="followup-card">
+        <div class="followup-header">
+          <div>
+            <h2 class="card-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              Client-Ready Follow-up Message
+            </h2>
+            <p class="card-section-subtitle">Auto-generated from your findings. Edit before sending.</p>
+          </div>
+          <div class="followup-controls">
+            <div class="tone-selector">
+              <label for="tone-select" class="form-label">Tone</label>
+              <select id="tone-select" class="form-input form-select form-select-sm">
+                <option value="professional">Professional</option>
+                <option value="friendly">Friendly</option>
+                <option value="formal">Formal</option>
+                <option value="concise">Concise</option>
+              </select>
+            </div>
+            <button class="btn btn-secondary btn-sm" id="btn-regenerate">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1,4 1,10 7,10"/><path d="M3.51 15a9 9 0 1 0 .49-3.3"/></svg>
+              Regenerate
+            </button>
+          </div>
+        </div>
+
+        <div class="followup-body">
+          <div class="followup-meta-row">
+            <input type="text" id="followup-subject" class="form-input followup-subject" placeholder="Subject: Onboarding Follow-up — [Client Name]" aria-label="Email subject" />
+          </div>
+          <textarea id="followup-textarea" class="followup-textarea" aria-label="Follow-up message" spellcheck="true"></textarea>
+        </div>
+
+        <div class="followup-footer">
+          <div class="followup-stats" id="followup-stats"></div>
+          <div class="followup-actions">
+            <button class="btn btn-ghost btn-sm" id="btn-copy-subject">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy Subject
+            </button>
+            <button class="btn btn-secondary btn-sm" id="btn-copy-message">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy Message
+            </button>
+            <button class="btn btn-primary btn-sm" id="btn-copy-full">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy Full Email
+            </button>
+            <button class="btn btn-primary btn-sm" id="btn-export-pdf">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export PDF
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-footer">
+        <button class="btn btn-ghost" id="btn-step4-back">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12,19 5,12 12,5"/></svg>
+          Back
+        </button>
+        <button class="btn btn-primary btn-lg" id="btn-new-check">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Check
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== TOAST NOTIFICATION ===== -->
+  <div class="toast-container" id="toast-container" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ===== CONFIRM MODAL ===== -->
+  <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+    <div class="modal-box glass-card">
+      <h3 class="modal-title" id="modal-title"></h3>
+      <p class="modal-body" id="modal-body"></p>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" id="modal-cancel">Cancel</button>
+        <button class="btn btn-danger" id="modal-confirm">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
